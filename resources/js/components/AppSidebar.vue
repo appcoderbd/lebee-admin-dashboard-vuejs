@@ -30,13 +30,14 @@ const mainNavItems: NavItem[] = [
         icon: Hospital,
         children:[
             {
-                title: 'Create',
-                href: '#',
+                title: 'List',
+                href: '/hospitals',
             },
             {
-                title: 'List',
-                href: '#',
+                title: 'Create',
+                href: '/hospitals/create',
             },
+
         ],
     },
     {

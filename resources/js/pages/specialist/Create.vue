@@ -19,8 +19,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog"
 
+import { Button } from "@/components/ui/button"
 
 function handleDelete() {
   // 🧹 এখানে ডিলিট লজিক লিখবে
@@ -165,7 +166,7 @@ function previewIcon(event: Event) {
 
                     <div class="bg-gray-10 rounded-lg mt-4 p-6 border border-gray-300 border-dashed">
                         <div class="flex" >
-                            <h2 class="font-medium text-gray-600 mb-5">Specialist List</h2>
+                            <h2 class="font-medium text-gray-600 mb-5">Top Specialist List</h2>
                         </div>
 
                         <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
