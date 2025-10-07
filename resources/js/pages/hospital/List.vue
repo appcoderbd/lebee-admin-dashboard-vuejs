@@ -21,7 +21,7 @@ const breadcrumbs: BreadcrumbItem[]=[
 </script>
 
 <template>
-    <Head title="Create Specialist" />
+    <Head title="Hospitals List" />
     <AppLayout :breadcrumbs="breadcrumbs">
 
 

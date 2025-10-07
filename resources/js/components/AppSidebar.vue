@@ -52,15 +52,15 @@ const mainNavItems: NavItem[] = [
         children: [
             {
                 title: 'Add Doctor',
-                href: '#'
+                href: '/doctors/create'
             },
             {
                 title: 'All Doctor',
-                href: '#'
+                href: '/doctors'
             },
             {
                 title: 'Leave Doctor',
-                href: '#'
+                href: '/doctors/leave'
             },
         ],
     },

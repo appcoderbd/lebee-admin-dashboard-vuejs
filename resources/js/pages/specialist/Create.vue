@@ -1,60 +1,56 @@
 <script lang="ts" setup>
+defineProps(['specialist'])
+// defineProps({
+//   specialist: Object,
+// });
 import AppLayout from '@/layouts/AppLayout.vue';
-import { router } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { User, SquarePen, Trash, Stethoscope, FileText, UploadCloud, MoveLeft } from 'lucide-vue-next';
+import { Stethoscope, FileText, UploadCloud, MoveLeft, Trash, SquarePen } from 'lucide-vue-next';
+import { Button } from "@/components/ui/button";
+import { toast } from 'vue-sonner'
+import { Link } from '@inertiajs/vue3';
 
+
+
+// Breadcrumbs
+const breadcrumbs: BreadcrumbItem[] = [
+  { title: 'Specialist', href: '/specialists' },
+  { title: 'Create', href: '/specialists/create' },
+];
 
 // Alert Dialog----
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-
-import { Button } from "@/components/ui/button"
+import specialists from '@/routes/specialists';
 
 function handleDelete() {
-  // 🧹 এখানে ডিলিট লজিক লিখবে
-  // যেমন: router.delete(`/specialists/${id}`)
-  console.log("Item deleted successfully!");
+
+    // 🧹 এখানে ডিলিট লজিক লিখবে // যেমন:
+    // router.delete(/specialists/${id})
+    console.log("Item deleted successfully!");
 }
 
-// Alert Dialog----
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Specialist',
-        href: '/specialists',
-    },
-    {
-        title: 'Create',
-        href: '/specialists/create',
-    },
-];
-
-function back_page(){
-     router.visit('/specialists')
+function back_page() {
+  router.visit('/specialists');
 }
 
-
-const form = ref<{
-  specialty: string;
-  content: string;
-  icon: File | null;
-}>({
-  specialty: '',
-  content: '',
-  icon: null,
+// Inertia Form
+const form = useForm({
+  specialist_name: '',
+  description: '',
+  icon: null as File | null,
 });
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -68,12 +64,36 @@ function previewIcon(event: Event) {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (file) {
-    form.value.icon = file;
+    form.icon = file;
     iconPreview.value = URL.createObjectURL(file);
   }
 }
 
+
+function submitForm() {
+  const data = new FormData();
+  data.append('specialist_name', form.specialist_name);
+  data.append('description', form.description || '');
+  if (form.icon) {
+    data.append('icon', form.icon);
+  }
+
+  router.post('/specialists', data, {
+    onSuccess: () => {
+      // ✅ toast success
+      toast.success('✅ Specialist created successfully!')
+      form.reset()
+      iconPreview.value = null
+    },
+    onError: (errors) => {
+      console.error(errors)
+      // ✅ toast error
+      toast.error('❌ Something went wrong! Please check your inputs.')
+    },
+  });
+}
 </script>
+
 
 <template>
     <Head title="Create Specialist" />
@@ -100,7 +120,7 @@ function previewIcon(event: Event) {
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2 mb-4">
                     <div class="mt-4 w-xl rounded-lg p-6 border border-gray-300 border-dashed">
                         <h2 class="font-medium text-gray-600 mb-5">Complete the Form</h2>
-                        <form class="space-y-4">
+                        <form class="space-y-4" @submit.prevent="submitForm">
                             <div>
                                 <label for="specialty" class="block text-sm font-medium text-gray-700">Specialty</label>
                                 <div class="mt-1 w-lg relative">
@@ -108,7 +128,7 @@ function previewIcon(event: Event) {
                                     <input
                                         type="text"
                                         id="specialty"
-                                        v-model="form.specialty"
+                                        v-model="form.specialist_name"
                                         placeholder="Enter specialty"
                                         class="pl-10 py-3 px-3 w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                     />
@@ -121,7 +141,7 @@ function previewIcon(event: Event) {
                                     <textarea
                                         type="text"
                                         id="content"
-                                        v-model="form.content"
+                                        v-model="form.description"
                                         placeholder="Enter descriptions"
                                         class="pl-10 py-3 px-3 w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                                     ></textarea>
@@ -172,21 +192,21 @@ function previewIcon(event: Event) {
                         <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                             <thead class="bg-gray-100 text-gray-700 uppercase text-sm border-b-1 border-gray-400">
                                 <tr>
-                                <th class="px-6 py-3 text-left font-semibold">Icon</th>
-                                <th class="px-6 py-3 text-left font-semibold">Specialty</th>
-                                <th class="px-6 py-3 text-left font-semibold">Descriptions</th>
-                                <th class="px-6 py-3 text-right font-semibold">Action</th>
+                                <th class="px-6 py-3 text-sm text-left font-semibold">Icon</th>
+                                <th class="px-6 py-3 text-sm text-left font-semibold">Specialty</th>
+                                <th class="px-6 py-3 text-sm text-left font-semibold">Descriptions</th>
+                                <th class="px-6 py-3 text-sm text-right font-semibold">Action</th>
                                 </tr>
                             </thead>
                                 <tbody class="divide-y divide-gray-200 text-gray-800">
-                                    <tr class="hover:bg-gray-50 transition">
+                                    <tr class="hover:bg-gray-50 transition" v-for="specialists in specialist">
                                         <td class="px-6 py-4">
-                                            <img src="https://via.placeholder.com/40" alt="icon" class="w-10 h-10 rounded-full">
+                                            <img :src="`/${specialists.icon}`" alt="icon" class="w-10 h-10 rounded-full object-cover">
                                         </td>
                                         <td class="px-6 py-4">
-                                            <p class="font-medium">Neurologist</p>
+                                            <p class="font-medium text-sm">{{ specialists.specialist_name }}</p>
                                         </td>
-                                        <td class="px-6 py-4">This is Neurologist</td>
+                                        <td class="px-6 py-4 text-sm max-w-[200px] truncate">{{ specialists.description ? specialists.description.slice(0, 50) + (specialists.description.length > 50 ? '...' : '') : '' }}</td>
                                         <td class="px-6 py-4 flex items-center justify-end gap-2">
                                             <button
                                                 class="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-sm transition-all duration-200 shadow-sm"
@@ -223,7 +243,21 @@ function previewIcon(event: Event) {
                                             </AlertDialog>
                                         </td>
                                     </tr>
+                                    <!-- <tr class="hover:bg-gray-50 transition" v-if="specialist.length==0" >
+                                        <td class="px-6 py-4">No Specialist Found</td>
+                                    </tr> -->
                                 </tbody>
+                                <!-- Pagination Links -->
+                                <!-- <div class="flex justify-center mt-4 space-x-2">
+                                <Link
+                                    v-for="link in specialists.links"
+                                    :key="link.url"
+                                    :href="link.url"
+                                    v-html="link.label"
+                                    class="px-3 py-1 border rounded-md hover:bg-blue-100"
+                                    :class="{ 'bg-blue-500 text-white': link.active }"
+                                />
+                                </div> -->
                             </table>
                     </div>
                 </div>

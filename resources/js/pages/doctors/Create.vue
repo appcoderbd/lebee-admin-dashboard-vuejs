@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -7,24 +7,24 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { User } from 'lucide-vue-next';
 
-const breadcrumbs: BreadcrumbItem[]=[
+const breadcrumbs: BreadcrumbItem[] =[
     {
-        title: 'Hospital',
-        href: '/hospitals'
+        title: 'Doctors',
+        href: '#'
     },
     {
         title: 'Create',
-        href: '/hospitals/create'
+        href: '#'
     }
 ];
+
 
 </script>
 
 <template>
-    <Head title="Create Hospitals" />
-    <AppLayout :breadcrumbs="breadcrumbs">
-
-
+    <Head title="Doctors Create" />
+    <AppLayout>
 
     </AppLayout>
+
 </template>
